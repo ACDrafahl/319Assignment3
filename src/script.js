@@ -126,45 +126,35 @@ const Shop = () => {
   };
 
   // Define handleSubmit function
-  const handleSubmit = () => {
-    const fullName = document.getElementById("fullName").value;
-    const email = document.getElementById("email").value;
-    const cardNumber = document.getElementById("cardNumber").value;
-    const address = document.getElementById("address").value;
-    const address2 = document.getElementById("address2").value;
-    const city = document.getElementById("city").value;
-    const state = document.getElementById("state").value;
-    const zip = document.getElementById("zip").value;
+  const createProduct = () => {
+    const id = document.getElementById("id").value;
+    const title = document.getElementById("title").value;
+    const price = document.getElementById("price").value;
+    const category = document.getElementById("category").value;
+    const image = document.getElementById("image").value;
+    const rating = document.getElementById("rating").value;
 
-    // Validation checks
-    if (!fullName.trim()) {
-      alert("Please enter your full name.");
-      return;
-    }
-    if (!/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email)) {
-      alert("Please enter a valid email address.");
-      return;
-    }
-    if (!/^\d{16}$/.test(cardNumber)) {
-      alert("Please enter a valid 16-digit card number.");
-      return;
-    }
-    if (!address.trim()) {
-      alert("Please enter your address.");
-      return;
-    }
-    if (!city.trim()) {
-      alert("Please enter your city.");
-      return;
-    }
-    if (!state.trim()) {
-      alert("Please enter your state.");
-      return;
-    }
-    if (!/^\d{5}$/.test(zip)) {
-      alert("Please enter a valid 5-digit zip code.");
-      return;
-    }
+    // // Validation checks
+    // if (!id.trim()) {
+    //   alert("Please enter your full name.");
+    //   return;
+    // }
+    // if (!/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(title)) {
+    //   alert("Please enter a valid email address.");
+    //   return;
+    // }
+    // if (!/^\d{16}$/.test(price)) {
+    //   alert("Please enter a valid 16-digit card number.");
+    //   return;
+    // }
+    // if (!category.trim()) {
+    //   alert("Please enter your address.");
+    //   return;
+    // }
+    // if (!rating.trim()) {
+    //   alert("Please enter your city.");
+    //   return;
+    // }
 
     // If all validations pass, submit the order
     submitOrder();
@@ -209,23 +199,19 @@ const Shop = () => {
         <p>Total Price: ${(cartTotal + cartTotal * 0.07).toFixed(2)}</p>
         <p>User Information:</p>
         <p>
-          Full Name: {document.getElementById("fullName").value}
+          ID: {document.getElementById("id").value}
           <br />
-          Email: {document.getElementById("email").value}
+          Title: {document.getElementById("title").value}
           <br />
-          Card Number:{" "}
-          {"**** **** **** " +
-            document.getElementById("cardNumber").value.substr(-4)}
+          Price:{document.getElementById("price").value}
           <br />
-          Address: {document.getElementById("address").value}
+          Description: {document.getElementById("description").value}
           <br />
-          Address 2: {document.getElementById("address2").value}
+          Category: {document.getElementById("category").value}
           <br />
-          City: {document.getElementById("city").value}
+          Image: {document.getElementById("image").value}
           <br />
-          State: {document.getElementById("state").value}
-          <br />
-          Zip: {document.getElementById("zip").value}
+          Rating: {document.getElementById("rating").value}
         </p>
         <button onClick={handleReturnToBrowsing} className="btn btn-blue">
           <span className="button-text">Browse More Items</span>
@@ -281,17 +267,8 @@ const Shop = () => {
                   <div className="col">
                     <input
                       type="text"
-                      placeholder="Full Name"
-                      id="fullName"
-                      className="form-control"
-                      required
-                    />
-                  </div>
-                  <div className="col">
-                    <input
-                      type="email"
-                      placeholder="Email"
-                      id="email"
+                      placeholder="ID"
+                      id="id"
                       className="form-control"
                       required
                     />
@@ -301,17 +278,8 @@ const Shop = () => {
                   <div className="col">
                     <input
                       type="text"
-                      placeholder="Credit/Debit Card Number"
-                      id="cardNumber"
-                      className="form-control"
-                      required
-                    />
-                  </div>
-                  <div className="col">
-                    <input
-                      type="text"
-                      placeholder="Address"
-                      id="address"
+                      placeholder="Title"
+                      id="title"
                       className="form-control"
                       required
                     />
@@ -321,16 +289,19 @@ const Shop = () => {
                   <div className="col">
                     <input
                       type="text"
-                      placeholder="Address 2"
-                      id="address2"
+                      placeholder="Price"
+                      id="price"
                       className="form-control"
+                      required
                     />
                   </div>
+                </div>
+                  <div className="row mb-3">
                   <div className="col">
                     <input
                       type="text"
-                      placeholder="City"
-                      id="city"
+                      placeholder="Description"
+                      id="description"
                       className="form-control"
                       required
                     />
@@ -340,19 +311,29 @@ const Shop = () => {
                   <div className="col">
                     <input
                       type="text"
-                      placeholder="State"
-                      id="state"
+                      placeholder="Category"
+                      id="category"
+                      className="form-control"
+                    />
+                  </div>
+                </div>
+                  <div className="row mb-3">
+                  <div className="col">
+                    <input
+                      type="text"
+                      placeholder="Image"
+                      id="image"
                       className="form-control"
                       required
                     />
                   </div>
+                </div>
+                <div className="row mb-3">
                   <div className="col">
                     <input
                       type="text"
-                      placeholder="Zip"
-                      pattern="[0-9]{5}"
-                      title="Zip code should be 5 digits"
-                      id="zip"
+                      placeholder="Rating"
+                      id="rating"
                       className="form-control"
                       required
                     />
@@ -360,7 +341,7 @@ const Shop = () => {
                 </div>
                 <div className="row">
                   <div className="col">
-                    <button onClick={handleSubmit} className="btn btn-blue">
+                    <button onClick={createProduct} className="btn btn-blue">
                       <span className="button-text">Submit Order</span>
                     </button>
                   </div>

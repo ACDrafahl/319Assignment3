@@ -119,31 +119,68 @@ const CreateScreen = ({ onSubmit }) => {
 };
 
 // Read Screen Component
-const ReadScreen = ({ filteredItems, searchQuery, setSearchQuery }) => (
-  <div>
-    <h4>Read Products</h4>
+const ReadScreen = ({ filteredItems, searchQuery, setSearchID, searchID, readProduct, readProducts }) => {
+  const [getAllClicked, setGetAllClicked] = useState(false);
+  const [searchedItem, setSearchedItem] = useState(null);
+
+  const handleGet = () => {
+    readProduct(searchID)
+      .then((item) => {
+        if (item) {
+          setSearchedItem(item);
+        } else {
+          setSearchedItem(null); // Clear searchedItem if not found
+        }
+      })
+      .catch((error) => {
+        console.error("Error fetching product:", error);
+        setSearchedItem(null); // Clear searchedItem if error occurs
+      });
+
+    setGetAllClicked(false);
+  };
+
+  return (
     <div>
-      {filteredItems.map((item) => (
-        <div key={item.id} className="row">
-          <div className="col-2">
-            <img className="img-fluid" src={item.image} alt={item.title} />
+      <h4>Read Products</h4>
+      <div>
+        {getAllClicked ? (
+          filteredItems.map((item) => (
+            <div key={item.id} className="row">
+              <div className="col-2">
+                <img className="img-fluid" src={item.image} alt={item.title} />
+              </div>
+              <div className="col">
+                <span>{item.title}</span>
+                <span>{item.price !== null ? `$${item.price.toFixed(2)}` : 'Price not available'}</span>
+              </div>
+              <div className="col"></div>
+            </div>
+          ))
+        ) : searchedItem ? (
+          <div key={searchedItem.id} className="row">
+            <div className="col-2">
+              <img className="img-fluid" src={searchedItem.image} alt={searchedItem.title} />
+            </div>
+            <div className="col">
+              <span>{searchedItem.title}</span>
+              <span>{searchedItem.price !== null ? `$${searchedItem.price.toFixed(2)}` : 'Price not available'}</span>
+            </div>
+            <div className="col"></div>
           </div>
-          <div className="col">
-            <span>{item.title}</span>
-            <span>{item.price !== null ? `$${item.price.toFixed(2)}` : 'Price not available'}</span>
-          </div>
-          <div className="col"></div>
-        </div>
-      ))}
-      <input
-        type="text"
-        placeholder="Search by ID..."
-        value={searchQuery}
-        onChange={(e) => setSearchQuery(e.target.value)}
-      />
+        ) : null}
+        <input
+          type="text"
+          placeholder="Search by ID..."
+          value={searchID}
+          onChange={(e) => setSearchID(e.target.value)}
+        />
+        <button onClick={handleGet} className="btn btn-blue">Get</button>
+        <button onClick={() => { readProducts(); setGetAllClicked(true); }} className="btn btn-blue">Get All</button>
+      </div>
     </div>
-  </div>
-);
+  );
+};
 
 // Update Screen Component
 const UpdateScreen = ({ searchID, setSearchID, updateProduct }) => (
@@ -315,18 +352,20 @@ const Shop = () => {
 
   const readProduct = async (id) => {
     try {
-      const response = await fetch(`http://localhost:8081/readProduct/${id}`);
-      if (response.ok) {
-        const product = await response.json();
-        console.log('Product with ID', id, ':', product);
-        // Handle the product data as needed (display on UI, etc.)
-      } else {
-        console.error(`Failed to fetch product with ID ${id}`);
-      }
+        const response = await fetch(`http://localhost:8081/readProduct/${id}`);
+        if (response.ok) {
+            const product = await response.json();
+            console.log('Product with ID', id, ':', product);
+            return product; // Return the product data
+        } else {
+            console.error(`Failed to fetch product with ID ${id}`);
+            return null; // Return null if product retrieval fails
+        }
     } catch (error) {
-      console.error('Network error:', error);
+        console.error('Network error:', error);
+        return null; // Return null if an error occurs
     }
-  };
+};
 
   //Create onsubmit function placeholder
   const onSubmit = async (newProduct) => {
@@ -365,6 +404,10 @@ const Shop = () => {
             filteredItems={filteredItems}
             searchQuery={searchQuery}
             setSearchQuery={setSearchQuery}
+            searchID={searchID}
+            setSearchID={setSearchID}
+            readProduct={readProduct}
+            readProducts={readProducts}
           />
         )}
         {pageNum === 3 && (

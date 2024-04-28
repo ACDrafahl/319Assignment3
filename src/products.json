@@ -6,7 +6,7 @@
       "description": "",
       "category": "Handhelds",
       "image": "https://live.staticflickr.com/3576/3295920780_926cf2d96a_b.jpg",
-      "rating": { "rate": 3.9, "count": 120 }
+      "rating": 3.9
     },
     {
       "id": 2,
@@ -15,7 +15,7 @@
       "description": "",
       "category": "Handhelds",
       "image": "https://cdn2.picryl.com/photo/2018/03/22/game-gear-handheld-7fffcd-1024.jpg",
-      "rating": { "rate": 4.1, "count": 259 }
+      "rating": 4.1
     },
     {
       "id": 3,
@@ -24,7 +24,7 @@
       "description": "",
       "category": "Handhelds",
       "image": "https://live.staticflickr.com/2455/4023120177_08e1717dee_b.jpg",
-      "rating": { "rate": 4.7, "count": 500 }
+      "rating": 4.7
     },
     {
       "id": 4,
@@ -33,7 +33,7 @@
       "description": "",
       "category": "Consoles",
       "image": "https://c.pxhere.com/photos/76/e9/video_game_console_video_game_play_toy_computer_game_device_entertainment_electronics-1386878.jpg!d",
-      "rating": { "rate": 2.1, "count": 430 }
+      "rating": 2.1
     },
     {
       "id": 5,
@@ -42,7 +42,7 @@
       "description": "",
       "category": "Consoles",
       "image": "https://upload.wikimedia.org/wikipedia/commons/d/d0/Sega_Genesis_Mini_01.jpg",
-      "rating": { "rate": 4.6, "count": 400 }
+      "rating": 4.6
     },
     {
       "id": 6,
@@ -51,7 +51,7 @@
       "description": "",
       "category": "Consoles",
       "image": "https://cdn2.picryl.com/photo/2011/02/28/atari-2600-wood-4sw-set-16ef1f-1024.jpg",
-      "rating": { "rate": 3.9, "count": 70 }
+      "rating": 3.9
     }
   ]
   

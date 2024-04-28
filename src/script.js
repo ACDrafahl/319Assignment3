@@ -130,7 +130,7 @@ const ReadScreen = ({ filteredItems, searchQuery, setSearchQuery }) => (
           </div>
           <div className="col">
             <span>{item.title}</span>
-            <span>${item.price.toFixed(2)}</span>
+            <span>{item.price !== null ? `$${item.price.toFixed(2)}` : 'Price not available'}</span>
           </div>
           <div className="col"></div>
         </div>
@@ -204,9 +204,25 @@ const Shop = () => {
   const [cart, setCart] = useState([]);
   const [cartTotal, setCartTotal] = useState(0);
   const [searchQuery, setSearchQuery] = useState("");
-  const [filteredItems, setFilteredItems] = useState(items);
+  const [filteredItems, setFilteredItems] = useState([]);
   const [searchID, setSearchID] = useState("");
   const [pageNum, setPageNum] = useState(1);
+  const [items, setItems] = useState([]); // Initialize items state as an empty array
+
+  // Function to fetch products and set the items state
+  const fetchProducts = async () => {
+    try {
+      const products = await readProducts();
+      setItems(products); // Set the items state here
+      setFilteredItems(products); // Set filteredItems as well
+    } catch (error) {
+      console.error('Error fetching products:', error);
+    }
+  };
+
+  useEffect(() => {
+    fetchProducts();
+  }, []); // Run once on component mount to fetch products
 
   const calculateTotal = () => {
     setCartTotal(cart.reduce((total, item) => total + item.price, 0));
@@ -216,12 +232,13 @@ const Shop = () => {
     calculateTotal();
   }, [cart]);
 
-  useEffect(() => {
-    const filtered = items.filter((item) =>
-      item.title.toLowerCase().includes(searchQuery.toLowerCase())
-    );
-    setFilteredItems(filtered);
-  }, [searchQuery]);
+  // useEffect(() => {
+  //   const filtered = items.filter((item) =>
+  //     item.title.toLowerCase().includes(searchQuery.toLowerCase())
+  //   );
+  //   setFilteredItems(filtered);
+  // }, [searchQuery, items]); // Include items in the dependency array
+
 
   const createProduct = async (newProduct) => {
     try {

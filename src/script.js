@@ -6,8 +6,16 @@ const Shop = () => {
   const [cart, setCart] = useState([]);
   const [cartTotal, setCartTotal] = useState(0);
   const [searchQuery, setSearchQuery] = useState("");
+  const [searchID, setSearchID] = useState(""); // State to store the input ID for CRUD operations
   const [filteredItems, setFilteredItems] = useState(items);
   const [showCart, setShowCart] = useState(false); // State to control cart screen visibility
+  const [pageNum, setPageNum] = useState(1); // State to track pages
+  const createPage = 1;
+  const readPage = 2;
+  const updatePage = 3;
+  const deletePage = 4;
+  const infoPage = 5;
+
   const [orderConfirmed, setOrderConfirmed] = useState(false); // State to track order confirmation
 
   useEffect(() => {
@@ -173,11 +181,34 @@ const Shop = () => {
     setOrderConfirmed(false); // Reset order confirmation state
   };
 
-  if (orderConfirmed) {
+  if (pageNum === infoPage) {
     return (
       <div style={{ textAlign: "center" }}>
         <img src={companyLogo} alt="Company Logo" style={{ width: "100%" }} />{" "}
-        <h2>Order Confirmed!</h2>
+        <div style={{ textAlign: "left" }}>
+          {/* NAV BAR */}
+          <div>
+            <button onClick={() => setPageNum(1)} className="btn btn-red">
+              <span className="button-text">Create</span>
+            </button>
+            <button onClick={() => setPageNum(2)} className="btn btn-yellow">
+              <span className="button-text">Read</span>
+            </button>
+            <button onClick={() => setPageNum(3)} className="btn btn-green">
+              <span className="button-text">Update</span>
+            </button>
+            <button onClick={() => setPageNum(4)} className="btn btn-cobalt">
+              <span className="button-text">Delete</span>
+            </button>
+            <button
+              onClick={() => setPageNum(5)}
+              className="btn btn-light-gray"
+            >
+              <span className="button-text">Info</span>
+            </button>
+          </div>
+        </div>
+        <h2>Info</h2>
         <p>Congratulations on your purchase!</p>
         <p>Items Purchased:</p>
         <div>
@@ -198,7 +229,7 @@ const Shop = () => {
         </div>
         <p>Total Price: ${(cartTotal + cartTotal * 0.07).toFixed(2)}</p>
         <p>User Information:</p>
-        <p>
+        {/* <p>
           ID: {document.getElementById("id").value}
           <br />
           Title: {document.getElementById("title").value}
@@ -212,38 +243,135 @@ const Shop = () => {
           Image: {document.getElementById("image").value}
           <br />
           Rating: {document.getElementById("rating").value}
-        </p>
-        <button onClick={handleReturnToBrowsing} className="btn btn-blue">
-          <span className="button-text">Browse More Items</span>
-        </button>
+        </p> */}
       </div>
     );
   }
+
+  if (pageNum === updatePage) {
+    return (
+      <div style={{ textAlign: "center" }}>
+        <img src={companyLogo} alt="Company Logo" style={{ width: "100%" }} />{" "}
+      </div>
+      
+    );
+  }
+
+  if (pageNum === deletePage) {
+    return (
+      <div style={{ textAlign: "center" }}>
+        <img src={companyLogo} alt="Company Logo" style={{ width: "100%" }} />{" "}
+        <div style={{ textAlign: "left" }}>
+          {/* NAV BAR */}
+          <div>
+            <button onClick={() => setPageNum(1)} className="btn btn-red">
+              <span className="button-text">Create</span>
+            </button>
+            <button onClick={() => setPageNum(2)} className="btn btn-yellow">
+              <span className="button-text">Read</span>
+            </button>
+            <button onClick={() => setPageNum(3)} className="btn btn-green">
+              <span className="button-text">Update</span>
+            </button>
+            <button onClick={() => setPageNum(4)} className="btn btn-cobalt">
+              <span className="button-text">Delete</span>
+            </button>
+            <button
+              onClick={() => setPageNum(5)}
+              className="btn btn-light-gray"
+            >
+              <span className="button-text">Info</span>
+            </button>
+          </div>
+        </div>
+        <h2>Info</h2>
+        <p>Congratulations on your purchase!</p>
+        <p>Items Purchased:</p>
+        <div>
+          {getUniqueItems().map((item) => (
+            <div key={item.id} className="row">
+              <div className="col">
+                <img
+                  className="img-fluid"
+                  src={item.image}
+                  width={100}
+                  alt={item.title}
+                />
+              </div>
+              <div className="col">{item.title}</div>
+              <div className="col">Quantity: {item.quantity}</div>
+            </div>
+          ))}
+        </div>
+        <p>Total Price: ${(cartTotal + cartTotal * 0.07).toFixed(2)}</p>
+        <p>User Information:</p>
+        {/* <p>
+          ID: {document.getElementById("id").value}
+          <br />
+          Title: {document.getElementById("title").value}
+          <br />
+          Price:{document.getElementById("price").value}
+          <br />
+          Description: {document.getElementById("description").value}
+          <br />
+          Category: {document.getElementById("category").value}
+          <br />
+          Image: {document.getElementById("image").value}
+          <br />
+          Rating: {document.getElementById("rating").value}
+        </p> */}
+      </div>
+    );
+  }
+
+
 
   return (
     <div>
       <img src={companyLogo} alt="Company Logo" style={{ width: "100%" }} />{" "}
       <div>
         <div className="card"></div>
-        <div className="row">
-          {!showCart && (
-            <div className="col-md-4">
-              <input
-                type="text"
-                placeholder="Search items..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-              />
-            </div>
-          )}
-        </div>
-        {!showCart ? (
+        <div className="row"></div>
+        {pageNum === readPage ? (
           <div>
             <div className="col-md-8 cart">
               <div className="title">
                 <div className="row">
                   <div className="col">
                     <h4>
+                      {/* NAV BAR */}
+                      <div>
+                        <button
+                          onClick={() => setPageNum(1)}
+                          className="btn btn-red"
+                        >
+                          <span className="button-text">Create</span>
+                        </button>
+                        <button
+                          onClick={() => setPageNum(2)}
+                          className="btn btn-yellow"
+                        >
+                          <span className="button-text">Read</span>
+                        </button>
+                        <button
+                          onClick={() => setPageNum(3)}
+                          className="btn btn-green"
+                        >
+                          <span className="button-text">Update</span>
+                        </button>
+                        <button
+                          onClick={() => setPageNum(4)}
+                          className="btn btn-cobalt"
+                        >
+                          <span className="button-text">Delete</span>
+                        </button>
+                        <button
+                          onClick={() => setPageNum(5)}
+                          className="btn btn-light-gray"
+                        >
+                          <span className="button-text">Info</span>
+                        </button>
+                      </div>
                       <b>Shopping Cart</b>
                     </h4>
                   </div>
@@ -252,114 +380,146 @@ const Shop = () => {
               <div>{listItems}</div>
             </div>
           </div>
+          
         ) : (
           <div className="col-md-8">
-            <h4>Cart</h4>
-            {cartItems}
+            {/* NAV BAR */}
             <div>
-              <p>Subtotal: ${cartTotal.toFixed(2)}</p>
-              <p>Tax (7%): ${(cartTotal * 0.07).toFixed(2)}</p>
-              <p>Total: ${(cartTotal + cartTotal * 0.07).toFixed(2)}</p>
+              <button onClick={() => setPageNum(1)} className="btn btn-red">
+                <span className="button-text">Create</span>
+              </button>
+              <button onClick={() => setPageNum(2)} className="btn btn-yellow">
+                <span className="button-text">Read</span>
+              </button>
+              <button onClick={() => setPageNum(3)} className="btn btn-green">
+                <span className="button-text">Update</span>
+              </button>
+              <button onClick={() => setPageNum(4)} className="btn btn-cobalt">
+                <span className="button-text">Delete</span>
+              </button>
+              <button
+                onClick={() => setPageNum(5)}
+                className="btn btn-light-gray"
+              >
+                <span className="button-text">Info</span>
+              </button>
             </div>
             <div>
-              <div>
-                <div className="row mb-3">
-                  <div className="col">
-                    <input
-                      type="text"
-                      placeholder="ID"
-                      id="id"
-                      className="form-control"
-                      required
-                    />
+              {pageNum === createPage && (
+                <div>
+                  <h4>Create Item</h4>
+                  {cartItems}
+                  <div>
+                    <div>
+                      <div className="row mb-3">
+                        <div className="col">
+                          <input
+                            type="text"
+                            placeholder="ID"
+                            id="id"
+                            className="form-control"
+                            required
+                          />
+                        </div>
+                      </div>
+                      <div className="row mb-3">
+                        <div className="col">
+                          <input
+                            type="text"
+                            placeholder="Title"
+                            id="title"
+                            className="form-control"
+                            required
+                          />
+                        </div>
+                      </div>
+                      <div className="row mb-3">
+                        <div className="col">
+                          <input
+                            type="text"
+                            placeholder="Price"
+                            id="price"
+                            className="form-control"
+                            required
+                          />
+                        </div>
+                      </div>
+                      <div className="row mb-3">
+                        <div className="col">
+                          <input
+                            type="text"
+                            placeholder="Description"
+                            id="description"
+                            className="form-control"
+                            required
+                          />
+                        </div>
+                      </div>
+                      <div className="row mb-3">
+                        <div className="col">
+                          <input
+                            type="text"
+                            placeholder="Category"
+                            id="category"
+                            className="form-control"
+                          />
+                        </div>
+                      </div>
+                      <div className="row mb-3">
+                        <div className="col">
+                          <input
+                            type="text"
+                            placeholder="Image"
+                            id="image"
+                            className="form-control"
+                            required
+                          />
+                        </div>
+                      </div>
+                      <div className="row mb-3">
+                        <div className="col">
+                          <input
+                            type="text"
+                            placeholder="Rating"
+                            id="rating"
+                            className="form-control"
+                            required
+                          />
+                        </div>
+                      </div>
+                      <div className="row">
+                        <div className="col">
+                          <button
+                            onClick={createProduct}
+                            className="btn btn-blue"
+                          >
+                            <span className="button-text">Submit</span>
+                          </button>
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 </div>
-                <div className="row mb-3">
-                  <div className="col">
-                    <input
-                      type="text"
-                      placeholder="Title"
-                      id="title"
-                      className="form-control"
-                      required
-                    />
-                  </div>
-                </div>
-                <div className="row mb-3">
-                  <div className="col">
-                    <input
-                      type="text"
-                      placeholder="Price"
-                      id="price"
-                      className="form-control"
-                      required
-                    />
-                  </div>
-                </div>
-                  <div className="row mb-3">
-                  <div className="col">
-                    <input
-                      type="text"
-                      placeholder="Description"
-                      id="description"
-                      className="form-control"
-                      required
-                    />
-                  </div>
-                </div>
-                <div className="row mb-3">
-                  <div className="col">
-                    <input
-                      type="text"
-                      placeholder="Category"
-                      id="category"
-                      className="form-control"
-                    />
-                  </div>
-                </div>
-                  <div className="row mb-3">
-                  <div className="col">
-                    <input
-                      type="text"
-                      placeholder="Image"
-                      id="image"
-                      className="form-control"
-                      required
-                    />
-                  </div>
-                </div>
-                <div className="row mb-3">
-                  <div className="col">
-                    <input
-                      type="text"
-                      placeholder="Rating"
-                      id="rating"
-                      className="form-control"
-                      required
-                    />
-                  </div>
-                </div>
-                <div className="row">
-                  <div className="col">
-                    <button onClick={createProduct} className="btn btn-blue">
-                      <span className="button-text">Submit Order</span>
-                    </button>
-                  </div>
-                </div>
-              </div>
+              )}
             </div>
           </div>
         )}
       </div>
+      
       <div style={{ marginTop: "20px", marginBottom: "20px" }}>
-        {!showCart && (
-          <button onClick={handleCheckout} className="btn btn-blue">
-            <span className="button-text">Checkout</span>
-          </button>
+        {pageNum === readPage && (
+          <div className="col-md-4">
+            <input
+              type="text"
+              placeholder="Enter ID..."
+              value={searchID}
+              onChange={(e) => setSearchID(e.target.value)}
+            />
+          </div>
         )}
-        {showCart && (
-          <button onClick={handleReturn} className="btn btn-pink">
-            <span className="button-text">Return</span>
+        {pageNum === readPage && (
+          <button onClick={() => setPageNum(1)} className="btn btn-blue">
+            <span className="button-text">Checkout</span>
           </button>
         )}
       </div>

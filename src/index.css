@@ -35,3 +35,35 @@ code {
   /* Add any other styling as needed */
 }
 
+.btn-red {
+  background-color: #ff3333; /* Change this to your desired color */
+  color: #ffffff; /* Text color */
+  /* Add any other styling as needed */
+}
+
+.btn-yellow {
+  background-color: #ffcc00; /* Change this to your desired color */
+  color: #ffffff; /* Text color */
+  /* Add any other styling as needed */
+}
+
+.btn-green {
+  background-color: #33ff33; /* Change this to your desired color */
+  color: #ffffff; /* Text color */
+  /* Add any other styling as needed */
+}
+
+.btn-cobalt {
+  background-color: #0047ab; /* Change this to your desired color */
+  color: #ffffff; /* Text color */
+  /* Add any other styling as needed */
+}
+
+.btn-light-gray {
+  background-color: #808080; /* Change this to your desired color */
+  color: #ffffff; /* Text color */
+  /* Add any other styling as needed */
+}
+
+
+

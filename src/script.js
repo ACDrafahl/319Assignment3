@@ -5,30 +5,118 @@ import companyLogo from "./company_logo.png";
 // Navigation Bar Component
 const NavigationBar = ({ setPageNum }) => (
   <div>
-    <button onClick={() => setPageNum(1)} className="btn btn-red">Create</button>
-    <button onClick={() => setPageNum(2)} className="btn btn-yellow">Read</button>
-    <button onClick={() => setPageNum(3)} className="btn btn-green">Update</button>
-    <button onClick={() => setPageNum(4)} className="btn btn-cobalt">Delete</button>
-    <button onClick={() => setPageNum(5)} className="btn btn-light-gray">Info</button>
+    <button onClick={() => setPageNum(1)} className="btn btn-red">
+      Create
+    </button>
+    <button onClick={() => setPageNum(2)} className="btn btn-yellow">
+      Read
+    </button>
+    <button onClick={() => setPageNum(3)} className="btn btn-green">
+      Update
+    </button>
+    <button onClick={() => setPageNum(4)} className="btn btn-cobalt">
+      Delete
+    </button>
+    <button onClick={() => setPageNum(5)} className="btn btn-light-gray">
+      Info
+    </button>
   </div>
 );
 
 // Create Screen Component
-const CreateScreen = ({ createProduct }) => (
-  <div>
-    <h4>Create Product</h4>
+const CreateScreen = ({ onSubmit }) => {
+  // Define states for each input field
+  const [id, setId] = useState("");
+  const [title, setTitle] = useState("");
+  const [price, setPrice] = useState("");
+  const [description, setDescription] = useState("");
+  const [category, setCategory] = useState("");
+  const [image, setImage] = useState("");
+  const [rating, setRating] = useState("");
+
+  // Handle the form submission
+  const handleSubmit = () => {
+    const newProduct = {
+      id,
+      title,
+      price,
+      description,
+      category,
+      image,
+      rating,
+    };
+
+    // Pass the new product to the parent component's onSubmit function
+    onSubmit(newProduct);
+  };
+
+  return (
     <div>
-      <input type="text" placeholder="ID" id="id" className="form-control" required />
-      <input type="text" placeholder="Title" id="title" className="form-control" required />
-      <input type="text" placeholder="Price" id="price" className="form-control" required />
-      <input type="text" placeholder="Description" id="description" className="form-control" required />
-      <input type="text" placeholder="Category" id="category" className="form-control" required />
-      <input type="text" placeholder="Image" id="image" class="form-control" required />
-      <input type="text" placeholder="Rating" id="rating" class="form-control" required />
-      <button onClick={createProduct} className="btn btn-blue">Submit</button>
+      <h4>Create Product</h4>
+      <div>
+        <input
+          type="text"
+          placeholder="ID"
+          value={id}
+          onChange={(e) => setId(e.target.value)}
+          className="form-control"
+          required
+        />
+        <input
+          type="text"
+          placeholder="Title"
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
+          className="form-control"
+          required
+        />
+        <input
+          type="text"
+          placeholder="Price"
+          value={price}
+          onChange={(e) => setPrice(e.target.value)}
+          className="form-control"
+          required
+        />
+        <input
+          type="text"
+          placeholder="Description"
+          value={description}
+          onChange={(e) => setDescription(e.target.value)}
+          className="form-control"
+          required
+        />
+        <input
+          type="text"
+          placeholder="Category"
+          value={category}
+          onChange={(e) => setCategory(e.target.value)}
+          className="form-control"
+          required
+        />
+        <input
+          type="text"
+          placeholder="Image"
+          value={image}
+          onChange={(e) => setImage(e.target.value)}
+          className="form-control"
+          required
+        />
+        <input
+          type="text"
+          placeholder="Rating"
+          value={rating}
+          onChange={(e) => setRating(e.target.value)}
+          className="form-control"
+          required
+        />
+        <button onClick={handleSubmit} className="btn btn-blue">
+          Submit
+        </button>
+      </div>
     </div>
-  </div>
-);
+  );
+};
 
 // Read Screen Component
 const ReadScreen = ({ filteredItems, searchQuery, setSearchQuery }) => (
@@ -44,16 +132,15 @@ const ReadScreen = ({ filteredItems, searchQuery, setSearchQuery }) => (
             <span>{item.title}</span>
             <span>${item.price.toFixed(2)}</span>
           </div>
-          <div className="col">
-          </div>
+          <div className="col"></div>
         </div>
       ))}
       <input
-      type="text"
-      placeholder="Search by ID..."
-      value={searchQuery}
-      onChange={(e) => setSearchQuery(e.target.value)}
-    />
+        type="text"
+        placeholder="Search by ID..."
+        value={searchQuery}
+        onChange={(e) => setSearchQuery(e.target.value)}
+      />
     </div>
   </div>
 );
@@ -68,12 +155,14 @@ const UpdateScreen = ({ searchID, setSearchID, updateProduct }) => (
       value={searchID}
       onChange={(e) => setSearchID(e.target.value)}
     />
-    <button onClick={() => updateProduct(searchID)} className="btn btn-blue">Fetch item to update</button>
+    <button onClick={() => updateProduct(searchID)} className="btn btn-blue">
+      Fetch item to update
+    </button>
   </div>
 );
 
 // Delete Screen Component
-const DeleteScreen = ({ deleteProduct, searchID}) => (
+const DeleteScreen = ({ deleteProduct, searchID }) => (
   <div>
     <h4>Delete Product</h4>
     <input
@@ -81,7 +170,9 @@ const DeleteScreen = ({ deleteProduct, searchID}) => (
       placeholder="Enter ID to delete..."
       onChange={(e) => deleteProduct(e.target.value)}
     />
-    <button onClick={() => deleteProduct(searchID)} className="btn btn-blue">Fetch item to delete</button>
+    <button onClick={() => deleteProduct(searchID)} className="btn btn-blue">
+      Fetch item to delete
+    </button>
   </div>
 );
 
@@ -93,8 +184,15 @@ const InfoScreen = ({ getUniqueItems, cartTotal }) => (
     <p>Items Purchased:</p>
     {getUniqueItems().map((item) => (
       <div key={item.id}>
-        <img className="img-fluid" src={item.image} width={100} alt={item.title} />
-        <span>{item.title} - Quantity: {item.quantity}</span>
+        <img
+          className="img-fluid"
+          src={item.image}
+          width={100}
+          alt={item.title}
+        />
+        <span>
+          {item.title} - Quantity: {item.quantity}
+        </span>
       </div>
     ))}
     <p>Total Price: ${(cartTotal * 1.07).toFixed(2)}</p>
@@ -138,6 +236,11 @@ const Shop = () => {
     console.log(`Delete product with ID: ${id}`);
   };
 
+  //Create onsubmit function placeholder
+  const onSubmit = (newProduct) => {
+    console.log(newProduct);
+  };
+
   const getUniqueItems = () => {
     const uniqueItems = cart.reduce((acc, item) => {
       const existingItem = acc.find((i) => i.id === item.id);
@@ -156,7 +259,7 @@ const Shop = () => {
       <img src={companyLogo} alt="Company Logo" style={{ width: "100%" }} />
       <NavigationBar setPageNum={setPageNum} />
       <div>
-        {pageNum === 1 && <CreateScreen createProduct={createProduct} />}
+        {pageNum === 1 && <CreateScreen createProduct={createProduct} onSubmit={onSubmit} />}
         {pageNum === 2 && (
           <ReadScreen
             filteredItems={filteredItems}
@@ -173,10 +276,7 @@ const Shop = () => {
         )}
         {pageNum === 4 && <DeleteScreen deleteProduct={deleteProduct} />}
         {pageNum === 5 && (
-          <InfoScreen
-            getUniqueItems={getUniqueItems}
-            cartTotal={cartTotal}
-          />
+          <InfoScreen getUniqueItems={getUniqueItems} cartTotal={cartTotal} />
         )}
       </div>
     </div>

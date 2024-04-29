@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import items from "./products.json";
 import companyLogo from "./company_logo.png";
 
 // Navigation Bar Component
@@ -32,7 +31,8 @@ const CreateScreen = ({ onSubmit }) => {
   const [description, setDescription] = useState("");
   const [category, setCategory] = useState("");
   const [image, setImage] = useState("");
-  const [rating, setRating] = useState("");
+  const [ratingRate, setRatingRate] = useState("");
+  const [ratingCount, setRatingCount] = useState("");
 
   // Handle the form submission
   const handleSubmit = () => {
@@ -43,7 +43,10 @@ const CreateScreen = ({ onSubmit }) => {
       description,
       category,
       image,
-      rating,
+      rating: {
+        rate: ratingRate,
+        count: ratingCount
+      },
     };
 
     // Pass the new product to the parent component's onSubmit function
@@ -104,9 +107,17 @@ const CreateScreen = ({ onSubmit }) => {
         />
         <input
           type="text"
-          placeholder="Rating"
-          value={rating}
-          onChange={(e) => setRating(e.target.value)}
+          placeholder="Rating Rate"
+          value={ratingRate}
+          onChange={(e) => setRatingRate(e.target.value)}
+          className="form-control"
+          required
+        />
+        <input
+          type="text"
+          placeholder="Rating Count"
+          value={ratingCount}
+          onChange={(e) => setRatingCount(e.target.value)}
           className="form-control"
           required
         />
@@ -145,30 +156,32 @@ const ReadScreen = ({ filteredItems, searchQuery, setSearchID, searchID, readPro
       <h4>Read Products</h4>
       <div>
         {getAllClicked ? (
-          filteredItems.map((item) => (
-            <div key={item.id} className="row">
-              <div className="col-2">
-                <img className="img-fluid" src={item.image} alt={item.title} />
-              </div>
-              <div className="col">
-                <span>{item.title}</span>
-                <span>{item.price !== null ? `$${item.price.toFixed(2)}` : 'Price not available'}</span>
-              </div>
-              <div className="col"></div>
-            </div>
-          ))
-        ) : searchedItem ? (
-          <div key={searchedItem.id} className="row">
-            <div className="col-2">
-              <img className="img-fluid" src={searchedItem.image} alt={searchedItem.title} />
-            </div>
-            <div className="col">
-              <span>{searchedItem.title}</span>
-              <span>{searchedItem.price !== null ? `$${searchedItem.price.toFixed(2)}` : 'Price not available'}</span>
-            </div>
-            <div className="col"></div>
-          </div>
-        ) : null}
+  filteredItems.map((item) => (
+    <div key={item.id} className="row">
+      <div className="col-2">
+        <img className="img-fluid" src={item.image} alt={item.title} />
+      </div>
+      <div className="col">
+        <p>{item.title}</p>
+        <p>{item.price !== null ? `$${item.price.toFixed(2)}` : 'Price not available'}</p>
+        <p>Rating: {item.rating.rate} (Reviews: {item.rating.count})</p>
+      </div>
+      <div className="col"></div>
+    </div>
+  ))
+) : searchedItem ? (
+  <div key={searchedItem.id} className="row">
+    <div className="col-2">
+      <img className="img-fluid" src={searchedItem.image} alt={searchedItem.title} />
+    </div>
+    <div className="col">
+      <p>{searchedItem.title}</p>
+      <p>{searchedItem.price !== null ? `$${searchedItem.price.toFixed(2)}` : 'Price not available'}</p>
+      <p>Rating: {searchedItem.rating.rate} (Reviews: {searchedItem.rating.count})</p>
+    </div>
+    <div className="col"></div>
+  </div>
+) : null}
         <input
           type="text"
           placeholder="Search by ID..."
@@ -183,56 +196,169 @@ const ReadScreen = ({ filteredItems, searchQuery, setSearchID, searchID, readPro
 };
 
 // Update Screen Component
-const UpdateScreen = ({ searchID, setSearchID, updateProduct }) => (
-  <div>
-    <h4>Update Product</h4>
-    <input
-      type="text"
-      placeholder="Enter ID to update..."
-      value={searchID}
-      onChange={(e) => setSearchID(e.target.value)}
-    />
-    <button onClick={() => updateProduct(searchID)} className="btn btn-blue">
-      Fetch item to update
-    </button>
-  </div>
-);
+const UpdateScreen = ({ searchID, setSearchID, updateProduct, readProduct }) => {
+  const [fetchedItem, setFetchedItem] = useState(null);
+  const [updatedPrice, setUpdatedPrice] = useState("");
+  const [isItemFetched, setIsItemFetched] = useState(false);
+
+  const handleFetchItem = async () => {
+    try {
+      const item = await readProduct(searchID);
+      if (item) {
+        setFetchedItem(item);
+        setIsItemFetched(true);
+        setUpdatedPrice(item.price.toString()); // Set the default price as the fetched item's price
+      } else {
+        console.error(`Product with ID ${searchID} not found`);
+        setFetchedItem(null);
+        setIsItemFetched(false);
+      }
+    } catch (error) {
+      console.error("Error fetching product:", error);
+      setFetchedItem(null);
+      setIsItemFetched(false);
+    }
+  };
+
+  const handleUpdate = async () => {
+    const parsedPrice = parseFloat(updatedPrice);
+    if (isNaN(parsedPrice)) {
+      console.error("Invalid price");
+      return;
+    }
+
+    if (!fetchedItem) return;
+
+    const updatedProductData = { ...fetchedItem, price: parsedPrice };
+    await updateProduct(fetchedItem.id, updatedProductData);
+    // Optionally, you can add a success message or perform any additional actions after updating
+
+    // Clear fetched item and updated price after update
+    setFetchedItem(null);
+    setUpdatedPrice("");
+    setIsItemFetched(false);
+  };
+
+  return (
+    <div>
+      <h4>Update Product</h4>
+      <input
+        type="text"
+        placeholder="Enter ID to update..."
+        value={searchID}
+        onChange={(e) => setSearchID(e.target.value)}
+      />
+      <button onClick={handleFetchItem} className="btn btn-blue">
+        Fetch item to update
+      </button>
+      {isItemFetched && fetchedItem && (
+        <div>
+          <div>
+          <div className="col-2">
+      <img className="img-fluid" src={fetchedItem.image} alt={fetchedItem.title} />
+    </div>
+            <p>{fetchedItem.title}</p>
+            <p>
+              {fetchedItem.price !== null
+                ? `$${fetchedItem.price.toFixed(2)}`
+                : "Price not available"}
+            </p>
+          </div>
+          <input
+            type="text"
+            placeholder="Enter updated price..."
+            value={updatedPrice}
+            onChange={(e) => setUpdatedPrice(e.target.value)}
+          />
+          <button onClick={handleUpdate} className="btn btn-blue">
+            Confirm Update
+          </button>
+        </div>
+      )}
+    </div>
+  );
+};
 
 // Delete Screen Component
-const DeleteScreen = ({ deleteProduct, searchID }) => (
-  <div>
-    <h4>Delete Product</h4>
-    <input
-      type="text"
-      placeholder="Enter ID to delete..."
-      onChange={(e) => searchID = e.target.value}
-    />
-    <button onClick={() => deleteProduct(searchID)} className="btn btn-blue">
-      Fetch item to delete
-    </button>
-  </div>
-);
+const DeleteScreen = ({ deleteProduct, readProduct }) => {
+  const [searchID, setSearchID] = useState("");
+  const [searchedItem, setSearchedItem] = useState(null);
+
+  const handleFetchItem = async () => {
+    try {
+      const item = await readProduct(searchID);
+      if (item) {
+        setSearchedItem(item);
+      } else {
+        console.error(`Product with ID ${searchID} not found`);
+        setSearchedItem(null);
+      }
+    } catch (error) {
+      console.error("Error fetching product:", error);
+      setSearchedItem(null);
+    }
+  };
+
+  const handleDelete = async () => {
+    try {
+      if (!searchedItem) {
+        console.error("No item fetched to delete");
+        return;
+      }
+      await deleteProduct(searchID);
+      console.log(`Product with ID ${searchID} deleted successfully`);
+      // Optionally, you can perform any additional actions after deletion
+      setSearchedItem(null);
+      setSearchID("");
+    } catch (error) {
+      console.error("Error deleting product:", error);
+    }
+  };
+
+  return (
+    <div>
+      <h4>Delete Product</h4>
+      <input
+        type="text"
+        placeholder="Enter ID to delete..."
+        value={searchID}
+        onChange={(e) => setSearchID(e.target.value)}
+      />
+      <button onClick={handleFetchItem} className="btn btn-blue">
+        Fetch item to delete
+      </button>
+      {searchedItem && (
+        <div>
+          <div>
+          <div className="col-2">
+        <img className="img-fluid" src={searchedItem.image} alt={searchedItem.title} />
+          </div>
+            <p>{searchedItem.title}</p>
+            <p>
+              {searchedItem.price !== null
+                ? `$${searchedItem.price.toFixed(2)}`
+                : "Price not available"}
+            </p>
+          </div>
+          <button onClick={handleDelete} className="btn btn-red">
+            Confirm Delete
+          </button>
+        </div>
+      )}
+    </div>
+  );
+};
 
 // Info Screen Component
 const InfoScreen = ({ getUniqueItems, cartTotal }) => (
   <div>
-    <h2>Information</h2>
-    <p>Thank you for your purchase!</p>
-    <p>Items Purchased:</p>
-    {getUniqueItems().map((item) => (
-      <div key={item.id}>
-        <img
-          className="img-fluid"
-          src={item.image}
-          width={100}
-          alt={item.title}
-        />
-        <span>
-          {item.title} - Quantity: {item.quantity}
-        </span>
-      </div>
-    ))}
-    <p>Total Price: ${(cartTotal * 1.07).toFixed(2)}</p>
+    <h1>Information</h1>
+    <p><b>Authors:</b> Andy Drafahl & Michael Rubenacker</p>
+    <p><b>Emails:</b> acd7@iastate.edu & mrube@iastate.edu</p>
+    <p>Software Engineering/Computer Science 319</p>
+    <p>Dr. Abraham Aldaco</p>
+    <p>28 April 2024</p>
+    <p>For our project, we continued the development of our "Retro Revival" online storefront, this time on the administrative side. <br></br>This webpage would be used by admins to create new products for the site, view products, update the price of products, and delete products. <br></br>We included a simple view for each CRUD operation, along with a view for the Information page.</p>
   </div>
 );
 
@@ -398,7 +524,12 @@ const Shop = () => {
       <img src={companyLogo} alt="Company Logo" style={{ width: "100%" }} />
       <NavigationBar setPageNum={setPageNum} />
       <div>
-        {pageNum === 1 && <CreateScreen createProduct={createProduct} onSubmit={onSubmit} />}
+        {pageNum === 1 && (
+        <CreateScreen
+        createProduct={createProduct}
+        onSubmit={onSubmit}
+        />
+      )}
         {pageNum === 2 && (
           <ReadScreen
             filteredItems={filteredItems}
@@ -415,9 +546,15 @@ const Shop = () => {
             searchID={searchID}
             setSearchID={setSearchID}
             updateProduct={updateProduct}
+            readProduct={readProduct}
           />
         )}
-        {pageNum === 4 && <DeleteScreen deleteProduct={deleteProduct} />}
+        {pageNum === 4 && (
+        <DeleteScreen 
+        deleteProduct={deleteProduct} 
+        readProduct={readProduct}
+        />
+      )}
         {pageNum === 5 && (
           <InfoScreen getUniqueItems={getUniqueItems} cartTotal={cartTotal} />
         )}

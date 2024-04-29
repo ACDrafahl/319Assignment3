@@ -11,7 +11,7 @@ const { MongoClient } = require("mongodb");
 
 // Connect to MongoDB
 const url = "mongodb://localhost:27017/";
-const dbName = "secoms319";
+const dbName = "reactdata";
 const client = new MongoClient(url);
 const db = client.db(dbName);
 
@@ -36,11 +36,14 @@ app.post('/addProduct', async (req, res) => {
           price: Number(values[2]),
           description: values[3],
           category: values[4],
-          imageUrl: values[5],
-          rating: Number(values[6])
+          image: values[5],
+          rating: {
+            rate: Number(values[6].rate),
+            count: Number(values[6].count)
+          }
         };
         console.log(newDocument);
-        const results = await db.collection("hw3").insertOne(newDocument);
+        const results = await db.collection("fakestore_catalog").insertOne(newDocument);
         res.status(200).send(results);
       } catch (error) {
         console.error("An error occurred:", error);
@@ -54,8 +57,8 @@ app.delete("/deleteProduct/:id", async (req, res) => {
       await client.connect();
       console.log("Product ID to delete :", id);
       const query = { id: id };
-      //const robotDeleted = await db.collection("hw3").findOne(query);
-      const results = await db.collection("hw3").deleteOne(query);
+      //const robotDeleted = await db.collection("fakestore_catalog").findOne(query);
+      const results = await db.collection("fakestore_catalog").deleteOne(query);
       res.status(200);
       res.send(results);
     } catch (error) {
@@ -83,7 +86,7 @@ app.delete("/deleteProduct/:id", async (req, res) => {
         },
       };
   
-      const result = await db.collection("hw3").updateOne(filter, updateDocument);
+      const result = await db.collection("fakestore_catalog").updateOne(filter, updateDocument);
   
       res.status(200).send(result);
     } catch (error) {
@@ -93,10 +96,10 @@ app.delete("/deleteProduct/:id", async (req, res) => {
   });
 
   // Define a route to read all products
-app.get('/readProducts', async (req, res) => {
+  app.get('/readProducts', async (req, res) => {
     try {
       await client.connect();
-      const products = await db.collection("hw3").find({}).toArray();
+      const products = await db.collection("fakestore_catalog").find({}).toArray();
       res.status(200).json(products);
     } catch (error) {
       console.error("Error reading products:", error);
@@ -109,7 +112,7 @@ app.get('/readProducts', async (req, res) => {
     try {
       const id = Number(req.params.id);
       await client.connect();
-      const product = await db.collection("hw3").findOne({ id: id });
+      const product = await db.collection("fakestore_catalog").findOne({ id: id });
       if (product) {
         res.status(200).json(product);
       } else {
